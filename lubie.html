@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #333; }
+        button { font-size: 16px; padding: 8px 16px; margin: 10px; cursor: pointer; }
+        #points { font-size: 24px; margin: 20px 0; }
+        #buyPickaxeButton { font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Clicker Game</h1>
+    <p id="points">Points: 0</p>
+    <button id="clickButton">Click Me!</button>
+    <button id="buyBotButton" disabled>Buy Bot (100 points) - Adds 1 point/sec</button>
+    <button id="buyPickaxeButton" disabled>Buy Pickaxe (500 points) - Doubles points per click</button>
+    <p id="bots">Bots: 0</p>
+
+    <!-- Fart Sound -->
+    <audio id="fartSound" src="fart.mp3" preload="auto"></audio>
+
+    <script>
+        let points = 0;  // Points counter
+        let bots = 0;    // Bots counter
+        let pointsPerClick = 1;  // Points per click (default 1)
+        const fartSound = document.getElementById("fartSound");
+
+        // Function to update points and bot display
+        function update() {
+            document.getElementById("points").textContent = "Points: " + points;
+            document.getElementById("bots").textContent = "Bots: " + bots;
+            document.getElementById("buyBotButton").disabled = points < 100;
+            document.getElementById("buyPickaxeButton").disabled = points < 500 || pointsPerClick > 1;
+        }
+
+        // Click button functionality (add points based on pointsPerClick) and play fart sound
+        document.getElementById("clickButton").onclick = function() { 
+            points += pointsPerClick; 
+            fartSound.play(); // Play fart sound
+            update(); 
+        };
+
+        // Buy bot functionality (check if points are enough and subtract)
+        document.getElementById("buyBotButton").onclick = function() { 
+            if (points >= 100) {
+                points -= 100;  // Subtract 100 points for buying a bot
+                bots++;         // Add one bot
+                fartSound.play(); // Play fart sound
+                update();       // Update the display
+            }
+        };
+
+        // Buy pickaxe functionality (check if points are enough and subtract)
+        document.getElementById("buyPickaxeButton").onclick = function() { 
+            if (points >= 500 && pointsPerClick === 1) {
+                points -= 500;  // Subtract 500 points for buying the pickaxe
+                pointsPerClick = 2;  // Double the points per click
+                fartSound.play(); // Play fart sound
+                document.getElementById("buyPickaxeButton").style.display = "none"; // Hide pickaxe button after purchase
+                update();       // Update the display
+            }
+        };
+
+        // Bots clicking every second (add 1 point per bot every second)
+        setInterval(function() { 
+            points += bots;  // Add points based on number of bots
+            update();         // Update the display
+        }, 1000); // Update every second
+    </script>
+</body>
+</html>
